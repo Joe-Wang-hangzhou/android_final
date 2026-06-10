@@ -1,0 +1,7 @@
+HospitalRegistrationApp/android-app/.gradle/
+HospitalRegistrationApp/android-app/build/
+HospitalRegistrationApp/android-app/app/build/
+HospitalRegistrationApp/backend/target/
+*.iml
+.idea/
+local.properties
