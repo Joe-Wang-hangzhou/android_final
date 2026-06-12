@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface WhmAppointmentRepository extends JpaRepository<WchAppointment, Long> {
     List<WchAppointment> findByUser_IdOrderByCreateTimeDesc(Long userId);
 
-    @Query("select count(a) > 0 from WchAppointment a where a.patientPhone = :patientPhone and a.schedule.workDate = :workDate and a.schedule.timePeriod = :timePeriod and a.status = '已预约')")
+    @Query("select count(a) > 0 from WchAppointment a where a.patientPhone = :patientPhone and a.schedule.workDate = :workDate and a.schedule.timePeriod = :timePeriod and a.status = '已预约'")
     boolean existsActiveAppointmentAtSameTime(@Param("patientPhone") String patientPhone,
                                               @Param("workDate") LocalDate workDate,
                                               @Param("timePeriod") String timePeriod);
