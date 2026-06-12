@@ -7,15 +7,15 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
         android:label="@string/app_name">
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".MyAppointmentsActivity" />
-        <activity android:name=".DoctorDetailActivity" />
-        <activity android:name=".DoctorListActivity" />
-        <activity android:name=".DepartmentActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".WchProfileActivity" />
+        <activity android:name=".WchMyAppointmentsActivity" />
+        <activity android:name=".WhmDoctorDetailActivity" />
+        <activity android:name=".WhmDoctorListActivity" />
+        <activity android:name=".WhmDepartmentActivity" />
+        <activity android:name=".WchHomeActivity" />
+        <activity android:name=".WchRegisterActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".WchLoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
