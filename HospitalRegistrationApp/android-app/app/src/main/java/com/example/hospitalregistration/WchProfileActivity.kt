@@ -16,6 +16,10 @@ class WchProfileActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.txtInfo).text =
             "个人中心\n\n姓名：" + session.name() + "\n手机号：" + session.phone()
 
+        findViewById<Button>(R.id.btnPatients).setOnClickListener {
+            startActivity(Intent(this, WchPatientManageActivity::class.java))
+        }
+
         findViewById<Button>(R.id.btnLogout).setOnClickListener {
             session.clear()
             val intent = Intent(this, WchLoginActivity::class.java)

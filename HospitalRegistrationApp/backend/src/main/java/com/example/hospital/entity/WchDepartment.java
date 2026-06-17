@@ -14,6 +14,7 @@ public class WchDepartment {
     private Long id;
     private String name;
     private String description;
+    private String hospitalName;
 
     public WchDepartment() {}
 
@@ -39,5 +40,13 @@ public class WchDepartment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
     }
 }

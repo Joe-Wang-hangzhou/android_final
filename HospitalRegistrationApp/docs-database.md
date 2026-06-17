@@ -24,6 +24,7 @@ CREATE DATABASE hospital_registration DEFAULT CHARACTER SET utf8mb4 COLLATE utf8
 | id | bigint | 主键 |
 | name | varchar | 科室名称 |
 | description | varchar | 科室简介 |
+| hospital_name | varchar | 所属医院名称 |
 
 ## doctors 医生表
 

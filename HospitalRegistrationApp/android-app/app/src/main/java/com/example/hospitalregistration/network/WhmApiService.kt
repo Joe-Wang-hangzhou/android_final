@@ -29,7 +29,7 @@ interface WhmApiService {
     fun notices(): Call<List<Notice>>
 
     @GET("api/departments")
-    fun departments(): Call<List<Department>>
+    fun departments(@Query("hospitalName") hospitalName: String?): Call<List<Department>>
 
     @GET("api/doctors")
     fun doctors(@Query("departmentId") departmentId: Long): Call<List<Doctor>>

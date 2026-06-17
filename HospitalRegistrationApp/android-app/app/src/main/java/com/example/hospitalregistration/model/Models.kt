@@ -17,7 +17,12 @@ data class AppointmentRequest(
 )
 
 data class User(val id: Long, val name: String, val phone: String)
-data class Department(val id: Long, val name: String, val description: String?)
+data class Department(
+    val id: Long,
+    val name: String,
+    val description: String?,
+    val hospitalName: String?
+)
 data class Doctor(
     val id: Long,
     val name: String,

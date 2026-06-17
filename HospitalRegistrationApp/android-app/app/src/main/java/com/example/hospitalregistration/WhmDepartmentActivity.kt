@@ -18,11 +18,12 @@ class WhmDepartmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
-        findViewById<TextView>(R.id.txtPageTitle).text = "选择科室"
+        val hospitalName = intent.getStringExtra("hospitalName") ?: "市人民医院"
+        findViewById<TextView>(R.id.txtPageTitle).text = hospitalName + " - 选择科室"
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        WhmRetrofitClient.api.departments().enqueue(object : Callback<List<Department>> {
+        WhmRetrofitClient.api.departments(hospitalName).enqueue(object : Callback<List<Department>> {
             override fun onResponse(call: Call<List<Department>>, response: Response<List<Department>>) {
                 val list = response.body() ?: ArrayList()
                 recyclerView.adapter = WchDepartmentAdapter(list) { department ->

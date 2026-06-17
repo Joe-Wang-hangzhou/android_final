@@ -1,8 +1,11 @@
 package com.example.hospitalregistration
 
 import android.os.Bundle
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +19,8 @@ import com.example.hospitalregistration.model.Doctor
 import com.example.hospitalregistration.model.Schedule
 import com.example.hospitalregistration.network.WhmRetrofitClient
 import com.example.hospitalregistration.util.WhmSessionManager
+import com.example.hospitalregistration.util.WchPatientInfo
+import com.example.hospitalregistration.util.WchPatientStorage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,6 +28,9 @@ import retrofit2.Response
 class WhmDoctorDetailActivity : AppCompatActivity() {
     private var doctorId: Long = 0
     private var selectedSchedule: Schedule? = null
+    private val patientList = ArrayList<WchPatientInfo>()
+    private val patientNameList = ArrayList<String>()
+    private lateinit var patientAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +45,11 @@ class WhmDoctorDetailActivity : AppCompatActivity() {
 
         loadDoctor()
         loadSchedules()
+        initPatientSpinner()
 
+        findViewById<Button>(R.id.btnSavePatient).setOnClickListener {
+            saveCurrentPatient(true)
+        }
         findViewById<Button>(R.id.btnSubmitAppointment).setOnClickListener {
             submitAppointment()
         }
@@ -54,6 +66,8 @@ class WhmDoctorDetailActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.txtDoctor).text =
                     "医生：" + doctor.name + "\n" +
                     "职称：" + (doctor.title ?: "") + "\n" +
+                    "医院：" + (doctor.department?.hospitalName ?: "") + "\n" +
+                    "科室：" + (doctor.department?.name ?: "") + "\n" +
                     "擅长：" + (doctor.specialty ?: "") + "\n" +
                     "简介：" + (doctor.introduction ?: "")
             }
@@ -98,6 +112,7 @@ class WhmDoctorDetailActivity : AppCompatActivity() {
             Toast.makeText(this, "请填写就诊人信息", Toast.LENGTH_SHORT).show()
             return
         }
+        saveCurrentPatient(false)
 
         val userId = WhmSessionManager(this).userId()
         val request = AppointmentRequest(
@@ -126,5 +141,64 @@ class WhmDoctorDetailActivity : AppCompatActivity() {
                 Toast.makeText(this@WhmDoctorDetailActivity, "提交预约失败", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun initPatientSpinner() {
+        loadPatients()
+        val spinner = findViewById<Spinner>(R.id.spinnerPatient)
+        patientAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, patientNameList)
+        patientAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = patientAdapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (position > 0) {
+                    val item = patientList[position - 1]
+                    findViewById<EditText>(R.id.edtPatientName).setText(item.name)
+                    findViewById<EditText>(R.id.edtPatientPhone).setText(item.phone)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
+    private fun loadPatients() {
+        patientList.clear()
+        patientNameList.clear()
+        patientNameList.add("请选择已保存就诊人")
+        val savedList = WchPatientStorage(this).loadPatients()
+        for (item in savedList) {
+            patientList.add(item)
+            patientNameList.add(item.name + "  " + item.phone)
+        }
+    }
+
+    private fun saveCurrentPatient(showToast: Boolean) {
+        val name = findViewById<EditText>(R.id.edtPatientName).text.toString().trim()
+        val phone = findViewById<EditText>(R.id.edtPatientPhone).text.toString().trim()
+        if (name.isEmpty() || phone.isEmpty()) {
+            if (showToast) {
+                Toast.makeText(this, "请先填写就诊人姓名和手机号", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        var exists = false
+        for (item in patientList) {
+            if (item.name == name && item.phone == phone) {
+                exists = true
+            }
+        }
+        if (!exists) {
+            WchPatientStorage(this).addPatient(name, phone)
+            loadPatients()
+            patientAdapter.clear()
+            patientAdapter.addAll(patientNameList)
+            patientAdapter.notifyDataSetChanged()
+        }
+        if (showToast) {
+            Toast.makeText(this, "就诊人已保存", Toast.LENGTH_SHORT).show()
+        }
     }
 }

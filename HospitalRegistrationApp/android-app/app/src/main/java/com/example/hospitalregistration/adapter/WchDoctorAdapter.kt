@@ -3,6 +3,7 @@ package com.example.hospitalregistration.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hospitalregistration.R
@@ -13,12 +14,13 @@ class WchDoctorAdapter(
     private val listener: (Doctor) -> Unit
 ) : RecyclerView.Adapter<WchDoctorAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView = view.findViewById(R.id.txtTitle)
-        val content: TextView = view.findViewById(R.id.txtContent)
+        val avatar: ImageView = view.findViewById(R.id.imgDoctorAvatar)
+        val title: TextView = view.findViewById(R.id.txtDoctorName)
+        val content: TextView = view.findViewById(R.id.txtDoctorInfo)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_text_card, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_doctor_card, parent, false)
         return ViewHolder(view)
     }
 
@@ -29,7 +31,16 @@ class WchDoctorAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
         holder.title.text = item.name
-        holder.content.text = item.title ?: ""
+        var info = item.title ?: ""
+        if (!item.specialty.isNullOrEmpty()) {
+            info = info + "\n擅长：" + item.specialty
+        }
+        val hospitalName = item.department?.hospitalName
+        if (!hospitalName.isNullOrEmpty()) {
+            info = info + "\n医院：" + hospitalName
+        }
+        holder.content.text = info
+        holder.avatar.setImageResource(R.drawable.ic_doctor_avatar)
         holder.itemView.setOnClickListener { listener(item) }
     }
 }

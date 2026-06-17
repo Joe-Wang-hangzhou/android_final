@@ -39,7 +39,10 @@ public class WhmHospitalController {
     }
 
     @GetMapping("/departments")
-    public List<WchDepartment> departments() {
+    public List<WchDepartment> departments(@RequestParam(required = false) String hospitalName) {
+        if (hospitalName != null && !hospitalName.isBlank()) {
+            return departmentRepository.findByHospitalName(hospitalName);
+        }
         return departmentRepository.findAll();
     }
 
